@@ -53,3 +53,6 @@ The PepFeed Instant Monetization WP Plugin automatically detects the product nam
 
 = 0.1 =
 First release.
+
+= 0.2 =
+Minor bug corrections. Code clean up.
