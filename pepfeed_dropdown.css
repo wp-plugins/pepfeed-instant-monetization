@@ -1,4 +1,3 @@
-/////Dropdown
 div.pepfeed-dropdown {
     position:relative;
     display:inline-block;
@@ -9,7 +8,6 @@ iframe.pepfeed-dropdown {
     top:0x;
     display: block;
 }
-
 
 .pepfeed-button-class {
     -webkit-border-radius: 5;
