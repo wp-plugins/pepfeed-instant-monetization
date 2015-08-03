@@ -56,3 +56,5 @@ First release.
 
 = 0.2 =
 Minor bug corrections. Code clean up.
+
+= 0.3 =
