@@ -52,11 +52,11 @@ The PepFeed Instant Monetization WP Plugin automatically detects the product nam
 == Changelog ==
 
 = 0.1 =
-First release.
+* First release.
 
 = 0.2 =
-Minor bug corrections. Code clean up.
+* Minor bug corrections. Code clean up.
 
 = 0.3 =
-Added 'show all stores' option. (experimental)
-Fixed widget's behaviour when displaying products in homepage
+* Added 'show all stores' option. (experimental)
+* Fixed widget's behaviour when displaying products in homepage
