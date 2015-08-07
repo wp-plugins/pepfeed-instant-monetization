@@ -5,6 +5,7 @@
 <?php wp_nonce_field('update-options'); ?>
 
 <table class="form-table">
+
 <!--
 	<tr valign="top">
 	<th scope="row">Currency</th>
@@ -48,6 +49,7 @@
 	</td>
 	</tr>
 -->
+
 	<tr valign="top">
 	<th scope="row">Amazon Affiliate ID</th>
 		<td>
@@ -71,6 +73,16 @@
 -->
 
 	<tr>
+	<th scope="row">Show all Stores</th>
+	<td>
+		<?php $my_pepfeed_show_all_stores = get_option( 'pepfeed_show_all_stores' ); ?>
+		<p><input id="pepfeed_show_all_stores" name="pepfeed_show_all_stores" type="checkbox" value="1" <?php checked( "1" == $my_pepfeed_show_all_stores );?>> Show all Stores (experimental)</p>
+		<p class="description" id="tagline-description">Show all Stores or show only amazon.com</p>
+	</td>
+	</tr>
+
+
+	<tr>
 	<th scope="row">Hide footer</th>
 	<td>
 		<?php $my_pepfeed_show_powered_by = get_option( 'pepfeed_show_powered_by' ); ?>
@@ -82,8 +94,8 @@
 </table>
 
 <input type="hidden" name="action" value="update" />
-<input type="hidden" name="page_options" value="pepfeed_amazon_affiliate_id,pepfeed_show_powered_by" />
-<!-- <input type="hidden" name="page_options" value="pepfeed_currency,pepfeed_sort_shops_by,pepfeed_region,pepfeed_amazon_affiliate_id,pepfeed_display_format,pepfeed_show_powered_by" /> -->
+<input type="hidden" name="page_options" value="pepfeed_amazon_affiliate_id,pepfeed_show_powered_by,pepfeed_show_all_stores" />
+<!-- <input type="hidden" name="page_options" value="pepfeed_currency,pepfeed_sort_shops_by,pepfeed_region,pepfeed_amazon_affiliate_id,pepfeed_display_format,pepfeed_show_powered_by,pepfeed_show_all_stores" /> -->
 
 <p class="submit">
 <input type="submit" class="button-primary" value="<?php _e('Save Changes') ?>" />

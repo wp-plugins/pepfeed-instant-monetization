@@ -1,5 +1,6 @@
 (function ($) {
 $(document).ready(function () {
+
     $("iframe.pepfeed-dropdown").hide();
     $("div.pepfeed-dropdown").hover(
 
@@ -12,7 +13,7 @@ $(document).ready(function () {
         $(this).children("iframe").stop(true, true).delay(500).fadeOut('medium');
     });
 
-    function doSomething() {
+    function pepfeed_ajax_button() {
         var el = $(this);
         var str = el.attr("data-pepfeed");
         $.ajax({
@@ -20,13 +21,9 @@ $(document).ready(function () {
             dataType: 'jsonp',
             success: function (data) {
                el.html( 'Save $' + (data.content.store_offers)[0].price + ' with PepFeed');
-//                $.each(data.content.store_offers, function (i, item) {
-//                    el.html('Save $' + item.price + ' with PepFeed');
-//                });
             }
         });
     }
-
-    $(".pepfeed-button-class").each(doSomething);
+    $(".pepfeed-button-class").each(pepfeed_ajax_button);
 });
 }(jQuery));

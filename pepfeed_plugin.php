@@ -1,17 +1,17 @@
 <?php
 /**
  * @package PepFeed
- * @version 0.2
+ * @version 0.3
  */
 /*
 Plugin Name: PepFeed Instant Monetization
 Plugin URI: http://pepfeed.com
 Description: Get instant access to the most relevant content about the gadgets you're browsing
 Author: PepFeed
-Version: 0.2
+Version: 0.3
 Author URI: http://pepfeed.com
 */
-    
+
 defined('ABSPATH') or die('No script kiddies please!');
 include_once("pepfeed_widget.php"); //load widget
 
@@ -27,6 +27,26 @@ function pepfeed_define_default_variables()
     add_option("pepfeed_amazon_affiliate_id", "pep07-20");
     add_option("pepfeed_display_format", "widget_format");
     add_option("pepfeed_show_powered_by", "0");
+    add_option("pepfeed_show_all_stores", "1");
+    add_option("pepfeed_button_footer_message", (string) rand(0, 1));
+    add_option("pepfeed_widget_footer_message", (string) rand(0, 1));
+}
+
+
+function pepfeed_widget_footer_messages(){
+    $pepfeed_footer_messages = array(
+    	'<a href="http://www.pepfeed.com/wordpress" target="_blank">Best deals</a> brought to you by <a href="http://www.pepfeed.com/wordpress" target="_blank">PepFeed</a>.',
+    	'<a href="http://www.pepfeed.com/wordpress" target="_blank">Price comparison</a> tool by <a href="http://www.pepfeed.com/wordpress" target="_blank">PepFeed</a>.',
+    	);
+    return $pepfeed_footer_messages;
+}
+
+function pepfeed_button_footer_messages(){
+    $pepfeed_footer_messages = array(
+    	'Brought to you by <a href="http://www.pepfeed.com/wordpress" target="_blank">PepFeed</a>',
+    	'Powered by <a href="http://www.pepfeed.com/wordpress" target="_blank">PepFeed</a>',
+    	);
+    return $pepfeed_footer_messages;
 }
 
 function pepfeed_testing_is_first_running()
@@ -52,9 +72,44 @@ function pepfeed_admin_actions()
 }
 add_action('admin_menu', 'pepfeed_admin_actions');
 
-function pepfeed_echo_powered_by()
+
+function pepfeed_echo_powered_by_widget()
 {
-    return '<small>Brought to you by <a href="http://www.pepfeed.com" target="_blank">PepFeed<a/>.</small>';
+	$assigned_message = get_option('pepfeed_widget_footer_message');
+    return '<small>'. pepfeed_widget_footer_messages()[$assigned_message] .'</small>';
+}
+
+function pepfeed_echo_powered_by_button()
+{
+	$assigned_message = get_option('pepfeed_button_footer_message');
+    return '<small>'. pepfeed_button_footer_messages()[$assigned_message] .'</small>';
+}
+
+
+//Getting last post title and url for the case where people are visiting the homepage
+function pepfeed_get_most_recent_post(){
+    $args = array( 'numberposts' => '1',  'post_status' => 'publish');
+    return wp_get_recent_posts($args);
+}
+
+
+//Testing if post is singular or is in THE loop
+function pepfeed_get_title(){
+    if(!is_singular() && !in_the_loop())
+        return pepfeed_get_most_recent_post()[0]["post_title"];
+    if(is_singular() && !in_the_loop())
+        return get_the_title();
+    if(in_the_loop())
+        return get_the_title();
+}
+
+function pepfeed_get_url(){
+    if(!is_singular() && !in_the_loop())
+        return get_permalink(pepfeed_get_most_recent_post()[0]["ID"]);
+    if(is_singular() && !in_the_loop())
+        return get_permalink();
+    if(in_the_loop())
+        return get_permalink();
 }
 
 //Returns widget iframe code
@@ -63,34 +118,55 @@ function pepfeed_getproducts_widget()
     if (get_option("pepfeed_agreement") != 1)
         return; //kill
     
+    $pepfeed_title = pepfeed_get_title();
+    $pepfeed_url = pepfeed_get_url();
+
     $query = array(
         "user" => "fd478c0712d841d5984805e4b81be828",
         "type" => "offers",
         "price" => "0",
         "region" => get_option("pepfeed_region"),
-        "query" => get_the_title(),
-        "q" => get_the_title(),
-        "url" => get_permalink(),
+        "query" => $pepfeed_title,
+        "q" => $pepfeed_title,
+        "url" => $pepfeed_url,
         "currency" => get_option("pepfeed_currency"),
         "sort" => get_option("pepfeed_sort_shops_by"),
 //        "difference" => get_option("pepfeed_price_difference"),
-        "affiliate_id" => get_option("pepfeed_amazon_affiliate_id")
+        "affiliate_id" => get_option("pepfeed_amazon_affiliate_id"),
+        "showallstores" => get_option("pepfeed_show_all_stores") ? "1" : "0",
     );
     
     $query_string = http_build_query($query);
     //$pepfeed_api  = "http://127.0.0.1:5500/embed/List/?";
-    $pepfeed_api  = 'http://pepfeed.com/embed/List/?';
+    $pepfeed_api  = 'http://www.pepfeed.com/embed/List/?';
     
     return '<iframe src="' . $pepfeed_api . $query_string . 
     '"width height="250" scrolling="no" frameborder="0" allowtransparency="true"></iframe>' . 
-    (get_option("pepfeed_show_powered_by") == 0 ? pepfeed_echo_powered_by() : "");
+    (get_option("pepfeed_show_powered_by") == 0 ? pepfeed_echo_powered_by_widget() : "")
+    ;
 }
+
+
+/*
+//load another version of jquery for the dropdown
+function pepfeed_init_jquery() {
+    if (!is_admin()) {
+        // comment out the next two lines to load the local copy of jQuery
+        wp_deregister_script('jquery'); 
+        wp_register_script('jquery', 'http://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js', false, '2.1.4'); 
+        wp_enqueue_script('jquery');
+    }
+}
+add_action('init', 'pepfeed_init_jquery');
+*/
+
 
 //add javascript for the dropdown
 function pepfeed_js_include_function() {
     wp_enqueue_script( 'pepfeed_jquery.js', wp_make_link_relative(plugin_dir_url(__FILE__)) . 'pepfeed_jquery.js', array('jquery') );
 }
 add_action('wp_enqueue_scripts', 'pepfeed_js_include_function');
+
 
 //add stylesheet for the dropdown
 function pepfeed_dropdown_enqueue_style()
@@ -113,17 +189,13 @@ function pepfeed_find_best_price()
         "currency" => get_option("pepfeed_currency"),
         "sort" => get_option("pepfeed_sort_shops_by"),
 //        "difference" => get_option("pepfeed_price_difference"),
-        "affiliate_id" => get_option("pepfeed_amazon_affiliate_id")
+        "affiliate_id" => get_option("pepfeed_amazon_affiliate_id"),
+        "showallstores" => get_option("pepfeed_show_all_stores") ? "1" : "0",
     );
    
     $q_string                = http_build_query($query_bestprice);
-    $pepfeed_api             = 'http://rz-app.cloudapp.net/search/store_offers?';
-    /*
-    $pepfeed_bestprice       = file_get_contents('http://rz-app.cloudapp.net/search/store_offers?' . $q_string);
-    $pepfeed_bestprice_array = json_decode($pepfeed_bestprice, true);
-    
-    $pepfeed_bestprice_value = $pepfeed_bestprice_array["content"]["store_offers"][0]["price"];
-    */
+    $pepfeed_api             = 'http://www.pepfeed.com/search/store_offers?';
+
     return $pepfeed_api . $q_string;
 }
 
@@ -144,19 +216,19 @@ function pepfeed_getproducts_button()
         "currency" => get_option("pepfeed_currency"),
         "sort" => get_option("pepfeed_sort_shops_by"),
 //        "difference" => get_option("pepfeed_price_difference"),
-        "affiliate_id" => get_option("pepfeed_amazon_affiliate_id")
+        "affiliate_id" => get_option("pepfeed_amazon_affiliate_id"),
+        "showallstores" => get_option("pepfeed_show_all_stores") ? "1" : "0",
     );   
 
-
     $query_string = http_build_query($query);
-    $pepfeed_api  = 'http://pepfeed.com/embed/List/?';
-    //$pepfeed_api  = "http://pepfeed.azurewebsites.net/ajaxlist/List/?";
-    
+    $pepfeed_api  = 'http://www.pepfeed.com/embed/List/?';
     
     return '<div class="pepfeed-dropdown" id="pepfeed-div-for-dropdown-1">    
 <a class="pepfeed-button-class" id="pepfeed-button-1" href="#" data-pepfeed="' . pepfeed_find_best_price() . '">Save Money with PepFeed</a>
 <iframe class="pepfeed-dropdown" id="pepfeed-iframe-1" src="' . $pepfeed_api . $query_string . '" width="300" height="250" frameborder="0" allowtransparency="true" scrolling="no"></iframe>
-</div>';
+</div><br>' .
+    (get_option("pepfeed_show_powered_by") == 0 ? pepfeed_echo_powered_by_button() : "")
+    ;
 }
 
 

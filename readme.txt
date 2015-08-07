@@ -3,7 +3,7 @@ Contributors: pepfeed
 Tags: wordpress, plugin, widget, best deals, price comparison, gadgets, amazon, affiliate, shopping assistant, monetization
 Requires at least: 4.2.2
 Tested up to: 4.2.3
-Stable tag: 0.2
+Stable tag: 0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -58,3 +58,5 @@ First release.
 Minor bug corrections. Code clean up.
 
 = 0.3 =
+Added 'show all stores' option. (experimental)
+Fixed widget's behaviour when displaying products in homepage
