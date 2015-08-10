@@ -1,14 +1,14 @@
 <?php
 /**
  * @package PepFeed
- * @version 0.3
+ * @version 0.4
  */
 /*
 Plugin Name: PepFeed Instant Monetization
 Plugin URI: http://pepfeed.com
 Description: Get instant access to the most relevant content about the gadgets you're browsing
 Author: PepFeed
-Version: 0.3
+Version: 0.4
 Author URI: http://pepfeed.com
 */
 
@@ -30,6 +30,7 @@ function pepfeed_define_default_variables()
     add_option("pepfeed_show_all_stores", "1");
     add_option("pepfeed_button_footer_message", (string) rand(0, 1));
     add_option("pepfeed_widget_footer_message", (string) rand(0, 1));
+    add_option("pepfeed_current_version", pepfeed_cc_author_admin_init());
 }
 
 
@@ -49,12 +50,12 @@ function pepfeed_button_footer_messages(){
     return $pepfeed_footer_messages;
 }
 
-function pepfeed_testing_is_first_running()
+function pepfeed_is_first_time_running()
 {
-    if (get_option("pepfeed_first_time") != 1)
+    if (get_option("pepfeed_first_time") != 1 || !get_option("pepfeed_current_version"))
         pepfeed_define_default_variables();
 }
-add_action('init', 'pepfeed_testing_is_first_running');
+add_action('admin_init', 'pepfeed_is_first_time_running');
 
 
 //They must accept terms and conditions to see the admin page

@@ -2,8 +2,8 @@
 Contributors: pepfeed
 Tags: wordpress, plugin, widget, best deals, price comparison, gadgets, amazon, affiliate, shopping assistant, monetization
 Requires at least: 4.2.2
-Tested up to: 4.2.3
-Stable tag: 0.3
+Tested up to: 4.2.4
+Stable tag: 0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -60,3 +60,6 @@ The PepFeed Instant Monetization WP Plugin automatically detects the product nam
 = 0.3 =
 * Added 'show all stores' option. (experimental)
 * Fixed widget's behaviour when displaying products in homepage
+
+= 0.4 =
+* Version control
